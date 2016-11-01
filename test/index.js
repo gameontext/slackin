@@ -50,6 +50,73 @@ describe('slackin', () => {
         .end(done);
     });
 
+    it("returns success for a successful invite for unrecognized ibm address", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+
+      // TODO simplify mocking
+      nock(`https://${opts.org}.slack.com`)
+        .post('/api/users.admin.invite')
+        .reply(200, { ok: true });
+
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@unk.ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(200, { msg: 'WOOT. Check your email!' })
+        .end(done);
+    });
+
+    it("returns a message for ibm.com", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
+        .end(done);
+    });
+
+    it("returns a message for us.ibm.com", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@us.ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
+        .end(done);
+
+    });
+
+    it("returns a message for uk.ibm.com", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@uk.ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
+        .end(done);
+    });
+
     it("returns a failure for a failure message", (done) => {
       let opts = {
         token: 'mytoken',
@@ -61,7 +128,7 @@ describe('slackin', () => {
         .post('/api/users.admin.invite')
         .reply(200, {
           ok: false,
-          error: "other error"
+          error: 'Unknown error, please open a github issue: <a href="https://github.com/gameontext/gameon/issues">https://github.com/gameontext/gameon/issues</a>'
         });
 
       let app = slackin(opts);
@@ -70,7 +137,7 @@ describe('slackin', () => {
         .post('/invite')
         .send({ email: 'foo@example.com' })
         .expect('Content-Type', /json/)
-        .expect(400, { msg: "other error" })
+        .expect(400, { msg: 'Unknown error, please open a github issue: <a href="https://github.com/gameontext/gameon/issues">https://github.com/gameontext/gameon/issues</a>' })
         .end(done);
     });
   });
