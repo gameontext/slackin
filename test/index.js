@@ -50,6 +50,68 @@ describe('slackin', () => {
         .end(done);
     });
 
+    it("returns a message for us.ibm.com", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@us.ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(200, { msg: 'Please join this slack project directly: <a href="https://gameontext.slack.com/signup">https://gameontext.slack.com/signup</a>.' })
+        .end(done);
+
+    });
+
+    it("returns a message for uk.ibm.com", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@uk.ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(200, { msg: 'Please join this slack project directly: <a href="https://gameontext.slack.com/signup">https://gameontext.slack.com/signup</a>.' })
+        .end(done);
+    });
+
+    it("returns a message for il.ibm.com", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@il.ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(200, { msg: 'Please join this slack project directly: <a href="https://gameontext.slack.com/signup">https://gameontext.slack.com/signup</a>.' })
+        .end(done);
+
+    });
+
+    it("returns a message for br.ibm.com", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@br.ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(200, { msg: 'Please join this slack project directly: <a href="https://gameontext.slack.com/signup">https://gameontext.slack.com/signup</a>.' })
+        .end(done);
+    });
+
     it("returns a failure for a failure message", (done) => {
       let opts = {
         token: 'mytoken',
@@ -61,7 +123,7 @@ describe('slackin', () => {
         .post('/api/users.admin.invite')
         .reply(200, {
           ok: false,
-          error: "other error"
+          error: 'Unknown error, please open a github issue: <a href="https://github.com/gameontext/gameon/issues">https://github.com/gameontext/gameon/issues</a>'
         });
 
       let app = slackin(opts);
@@ -70,7 +132,7 @@ describe('slackin', () => {
         .post('/invite')
         .send({ email: 'foo@example.com' })
         .expect('Content-Type', /json/)
-        .expect(400, { msg: "other error" })
+        .expect(400, { msg: 'Unknown error, please open a github issue: <a href="https://github.com/gameontext/gameon/issues">https://github.com/gameontext/gameon/issues</a>' })
         .end(done);
     });
   });

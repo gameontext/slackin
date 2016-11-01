@@ -31,12 +31,12 @@ describe('slack-invite', () => {
         post('/api/users.admin.invite').
         reply(200, {
           ok: false,
-          error: "other error"
+          error: 'Unknown error, please open a github issue: <a href="https://github.com/gameontext/gameon/issues">https://github.com/gameontext/gameon/issues</a>'
         });
 
       invite(opts, (err) => {
         assert.notEqual(err, null);
-        assert.equal(err.message, "other error");
+        assert.equal(err.message, 'Unknown error, please open a github issue: <a href="https://github.com/gameontext/gameon/issues">https://github.com/gameontext/gameon/issues</a>');
         done();
       });
     });
