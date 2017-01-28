@@ -1,13 +1,12 @@
-FROM node:slim
+FROM node:6.9-slim
 
-ENV PORT 3000
+MAINTAINER Erin Schnabel <schnabel@us.ibm.com> (@ebullientworks)
 
 ADD . /srv/www
-
 WORKDIR /srv/www
 
-RUN npm install 
+RUN npm install -d --unsafe-perm --production
 
 EXPOSE 3000
 
-CMD ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port $PORT $SLACK_SUBDOMAIN $SLACK_API_TOKEN
+CMD ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "$SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
