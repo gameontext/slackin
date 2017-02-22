@@ -34,7 +34,7 @@ fi
 
 if [ -z "$A8_REGISTRY_URL" ]; then
   #no a8, just run server.
-  exec ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
+  exec ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "$SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
 else
   #a8, configure security, and run via sidecar.
   if [ ! -z "$JWT" ]; then
@@ -42,5 +42,5 @@ else
     export A8_CONTROLLER_TOKEN=$JWT
   fi
 
-  exec a8sidecar --proxy --register ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
+  exec a8sidecar --proxy --register ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "$SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
 fi
