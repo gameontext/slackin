@@ -5,11 +5,6 @@ if [ ! -z "$ETCD_SECRET" ]; then
   . /data/primordial/setup.etcd.sh /data/primordial $ETCD_SECRET
 fi
 
-# Configure amalgam8 for this container
-export A8_SERVICE=slackin:v1
-export A8_ENDPOINT_PORT=3000
-export A8_ENDPOINT_TYPE=http
-
 if [ "$ETCDCTL_ENDPOINT" != "" ]; then
   echo Setting up etcd...
   echo "** Testing etcd is accessible"
@@ -26,21 +21,13 @@ if [ "$ETCDCTL_ENDPOINT" != "" ]; then
   done
   echo "etcdctl returned sucessfully, continuing"
 
-  export A8_REGISTRY_URL=$(etcdctl get /amalgam8/registryUrl)
-  export A8_CONTROLLER_URL=$(etcdctl get /amalgam8/controllerUrl)
-  export A8_CONTROLLER_POLL=$(etcdctl get /amalgam8/controllerPoll)
-  JWT=$(etcdctl get /amalgam8/jwt)
+  if [ -z "$SLACK_API_TOKEN" ]; then
+    export SLACK_API_TOKEN=$(etcdctl get /slackin/token)
+    export SLACK_COC=$(etcdctl get /slackin/coc)
+    export SLACK_CHANNELS=$(etcdctl get /slackin/channels)
+  fi 
+  
 fi
 
-if [ -z "$A8_REGISTRY_URL" ]; then
-  #no a8, just run server.
-  exec ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "$SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
-else
-  #a8, configure security, and run via sidecar.
-  if [ ! -z "$JWT" ]; then
-    export A8_REGISTRY_TOKEN=$JWT
-    export A8_CONTROLLER_TOKEN=$JWT
-  fi
+exec ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "$SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
 
-  exec a8sidecar --proxy --register ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "$SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
-fi
