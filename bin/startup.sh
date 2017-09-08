@@ -25,9 +25,10 @@ if [ "$ETCDCTL_ENDPOINT" != "" ]; then
     export SLACK_API_TOKEN=$(etcdctl get /slackin/token)
     export SLACK_COC=$(etcdctl get /slackin/coc)
     export SLACK_CHANNELS=$(etcdctl get /slackin/channels)
+    export SLACK_SUBDOMAIN=$(etcdctl get /slackin/team)
   fi 
   
 fi
 
-exec ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 "$SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
+exec ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port 3000 --interval 60000 "$SLACK_SUBDOMAIN" "$SLACK_API_TOKEN"
 

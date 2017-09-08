@@ -50,6 +50,21 @@ describe('slackin', () => {
         .end(done);
     });
 
+    it("returns a message for ibm.com", (done) => {
+      let opts = {
+        token: 'mytoken',
+        org: 'myorg'
+      };
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@ibm.com' })
+        .expect('Content-Type', /json/)
+        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
+        .end(done);
+    });
+
     it("returns a message for us.ibm.com", (done) => {
       let opts = {
         token: 'mytoken',
@@ -61,7 +76,7 @@ describe('slackin', () => {
         .post('/invite')
         .send({ email: 'foo@us.ibm.com' })
         .expect('Content-Type', /json/)
-        .expect(200, { msg: 'Please join this slack project directly: <a href="https://gameontext.slack.com/signup">https://gameontext.slack.com/signup</a>.' })
+        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
         .end(done);
 
     });
@@ -77,7 +92,7 @@ describe('slackin', () => {
         .post('/invite')
         .send({ email: 'foo@uk.ibm.com' })
         .expect('Content-Type', /json/)
-        .expect(200, { msg: 'Please join this slack project directly: <a href="https://gameontext.slack.com/signup">https://gameontext.slack.com/signup</a>.' })
+        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
         .end(done);
     });
 
@@ -92,7 +107,7 @@ describe('slackin', () => {
         .post('/invite')
         .send({ email: 'foo@il.ibm.com' })
         .expect('Content-Type', /json/)
-        .expect(200, { msg: 'Please join this slack project directly: <a href="https://gameontext.slack.com/signup">https://gameontext.slack.com/signup</a>.' })
+        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
         .end(done);
 
     });
@@ -108,7 +123,7 @@ describe('slackin', () => {
         .post('/invite')
         .send({ email: 'foo@br.ibm.com' })
         .expect('Content-Type', /json/)
-        .expect(200, { msg: 'Please join this slack project directly: <a href="https://gameontext.slack.com/signup">https://gameontext.slack.com/signup</a>.' })
+        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
         .end(done);
     });
 
