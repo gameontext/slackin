@@ -4,24 +4,29 @@ import slackin from '../lib/index';
 
 describe('slackin', () => {
   describe('POST /invite', () => {
-    beforeEach(() => {
-      nock('https://myorg.slack.com')
-        .get('/api/users.list')
-        .query({token: 'mytoken', presence: '1'})
-        .query({token: 'mytoken'})
+    let opts = {
+      token: 'mytoken',
+      org: 'myorg',
+      interval: 0
+    };
+
+    beforeEach(function() {
+      // runs once before the first test in this block
+      nock(`https://${opts.org}.slack.com`)
+        .get('/api/users.list?token=mytoken&presence=1')
         .reply(200, {
           ok: true,
           members: [{}]
         });
 
-      nock('https://myorg.slack.com')
+      nock(`https://${opts.org}.slack.com`)
         .get('/api/channels.list?token=mytoken')
         .reply(200, {
           ok: true,
           channels: [{}]
         });
 
-      nock('https://myorg.slack.com')
+      nock(`https://${opts.org}.slack.com`)
         .get('/api/team.info?token=mytoken')
         .reply(200, {
           ok: true,
@@ -30,10 +35,6 @@ describe('slackin', () => {
     });
 
     it("returns success for a successful invite", (done) => {
-      let opts = {
-        token: 'mytoken',
-        org: 'myorg'
-      };
 
       // TODO simplify mocking
       nock(`https://${opts.org}.slack.com`)
@@ -51,10 +52,6 @@ describe('slackin', () => {
     });
 
     it("returns success for a successful invite for unrecognized ibm address", (done) => {
-      let opts = {
-        token: 'mytoken',
-        org: 'myorg'
-      };
 
       // TODO simplify mocking
       nock(`https://${opts.org}.slack.com`)
@@ -72,10 +69,6 @@ describe('slackin', () => {
     });
 
     it("returns a message for ibm.com", (done) => {
-      let opts = {
-        token: 'mytoken',
-        org: 'myorg'
-      };
       let app = slackin(opts);
 
       request(app)
@@ -87,10 +80,6 @@ describe('slackin', () => {
     });
 
     it("returns a message for us.ibm.com", (done) => {
-      let opts = {
-        token: 'mytoken',
-        org: 'myorg'
-      };
       let app = slackin(opts);
 
       request(app)
@@ -103,10 +92,6 @@ describe('slackin', () => {
     });
 
     it("returns a message for uk.ibm.com", (done) => {
-      let opts = {
-        token: 'mytoken',
-        org: 'myorg'
-      };
       let app = slackin(opts);
 
       request(app)
@@ -118,12 +103,7 @@ describe('slackin', () => {
     });
 
     it("returns a failure for a failure message", (done) => {
-      let opts = {
-        token: 'mytoken',
-        org: 'myorg'
-      };
 
-      // TODO simplify mocking
       nock(`https://${opts.org}.slack.com`)
         .post('/api/users.admin.invite')
         .reply(200, {
@@ -142,46 +122,4 @@ describe('slackin', () => {
     });
   });
 
-  describe('GET /.well-known/acme-challenge/:id', () => {
-    beforeEach(() => {
-      process.env.LETSENCRYPT_CHALLENGE = 'letsencrypt-challenge';
-
-      nock('https://myorg.slack.com')
-        .get('/api/users.list')
-        .query({token: 'mytoken', presence: '1'})
-        .query({token: 'mytoken'})
-        .reply(200, {
-          ok: true,
-          members: [{}]
-        });
-
-      nock('https://myorg.slack.com')
-        .get('/api/channels.list?token=mytoken')
-        .reply(200, {
-          ok: true,
-          channels: [{}]
-        });
-
-      nock('https://myorg.slack.com')
-        .get('/api/team.info?token=mytoken')
-        .reply(200, {
-          ok: true,
-          team: {icon: {}}
-        })
-    });
-
-    it('returns the contents of the environment variable LETSENCRYPT_CHALLENGE', (done) => {
-      let opts = {
-        token: 'mytoken',
-        org: 'myorg'
-      };
-
-      let app = slackin(opts);
-
-      request(app)
-        .get('/.well-known/acme-challenge/deadbeef')
-        .expect(200, 'letsencrypt-challenge')
-        .end(done);
-    })
-  });
 });

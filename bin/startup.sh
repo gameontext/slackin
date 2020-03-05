@@ -30,6 +30,7 @@ if [ "$ETCDCTL_ENDPOINT" != "" ]; then
 
 fi
 
+# export DEBUG=express:* 
 exec ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" \
      --path "/slackin/" \
      --port 3000 \
