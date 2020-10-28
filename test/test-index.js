@@ -102,6 +102,17 @@ describe('slackin', () => {
         .end(done);
     });
 
+    it("returns a message for redhat.com", (done) => {
+      let app = slackin(opts);
+
+      request(app)
+        .post('/invite')
+        .send({ email: 'foo@redhat.com' })
+        .expect('Content-Type', /json/)
+        .expect(303, { msg: 'Red Hatters should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
+        .end(done);
+    });
+
     it("returns a failure for a failure message", (done) => {
 
       nock(`https://${opts.org}.slack.com`)
