@@ -51,57 +51,6 @@ describe('slackin', () => {
         .end(done);
     });
 
-    it("returns success for a successful invite for unrecognized ibm address", (done) => {
-
-      // TODO simplify mocking
-      nock(`https://${opts.org}.slack.com`)
-        .post('/api/users.admin.invite')
-        .reply(200, { ok: true });
-
-      let app = slackin(opts);
-
-      request(app)
-        .post('/invite')
-        .send({ email: 'foo@unk.ibm.com' })
-        .expect('Content-Type', /json/)
-        .expect(200, { msg: 'WOOT. Check your email!' })
-        .end(done);
-    });
-
-    it("returns a message for ibm.com", (done) => {
-      let app = slackin(opts);
-
-      request(app)
-        .post('/invite')
-        .send({ email: 'foo@ibm.com' })
-        .expect('Content-Type', /json/)
-        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
-        .end(done);
-    });
-
-    it("returns a message for us.ibm.com", (done) => {
-      let app = slackin(opts);
-
-      request(app)
-        .post('/invite')
-        .send({ email: 'foo@us.ibm.com' })
-        .expect('Content-Type', /json/)
-        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
-        .end(done);
-
-    });
-
-    it("returns a message for uk.ibm.com", (done) => {
-      let app = slackin(opts);
-
-      request(app)
-        .post('/invite')
-        .send({ email: 'foo@uk.ibm.com' })
-        .expect('Content-Type', /json/)
-        .expect(303, { msg: 'IBMers should join the slack team directly. Redirecting... ', redirectUrl: 'https://gameontext.slack.com/signup' })
-        .end(done);
-    });
-
     it("returns a message for redhat.com", (done) => {
       let app = slackin(opts);
 

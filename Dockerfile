@@ -1,6 +1,6 @@
 FROM node:10
 
-LABEL maintainer="Erin Schnabel <schnabel@us.ibm.com> (@ebullientworks)"
+LABEL maintainer="Erin Schnabel <ebullient@redhat.com> (@ebullientworks)"
 
 RUN wget https://github.com/coreos/etcd/releases/download/v2.2.2/etcd-v2.2.2-linux-amd64.tar.gz -q && \
     tar xzf etcd-v2.2.2-linux-amd64.tar.gz etcd-v2.2.2-linux-amd64/etcdctl --strip-components=1 && \
